@@ -1,0 +1,201 @@
+{
+  "name": "Data Analyst",
+  "nodes": [
+    {
+      "parameters": {
+        "public": true,
+        "initialMessages": "Hi there! 👋\nI am a Data Analyst assistant . How can I assist you today?\n",
+        "options": {
+          "inputPlaceholder": "hello",
+          "title": "your first insight",
+          "responseMode": "lastNode"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.chatTrigger",
+      "typeVersion": 1.4,
+      "position": [
+        0,
+        0
+      ],
+      "id": "c58938a3-f476-46ce-9d30-275d2c6dd49c",
+      "name": "When chat message received",
+      "webhookId": "55679d00-838f-4f89-b17a-ee5dad54f501"
+    },
+    {
+      "parameters": {
+        "options": {
+          "systemMessage": "{\n  \"model\": \"grok-2-latest\",\n  \"messages\": [\n    {\n      \"role\": \"system\",\n      \"content\": \"You are a professional senior data analyst and business intelligence expert. Your task is to analyze the provided CSV dataset and produce a clear structured analysis.\"\n    },\n    {\n      \"role\": \"user\",\n      \"content\": \"Analyze the provided CSV dataset and perform the following tasks: 1) Data Overview - describe columns, rows and structure. 2) Data Quality Check - identify missing values, duplicates and inconsistencies. 3) Key Insights - find important patterns, correlations and anomalies. 4) Trend Analysis - detect time-based trends if date columns exist. 5) Business Insights - explain what business decisions can be made from the data. 6) Recommended Visualizations - suggest charts such as KPI cards, bar charts, line charts, pie charts, heatmaps and dashboards. 7) Actionable Recommendations - provide practical steps based on the insights.\"\n    }\n  ],\n  \"temperature\": 0.3\n}"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3.1,
+      "position": [
+        208,
+        0
+      ],
+      "id": "2f109517-56e0-4209-bd2c-16445bc9fc36",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        224,
+        208
+      ],
+      "id": "1ddd2d01-1f13-4429-9eb8-1bc64592f1ef",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "model": "llama-3.1-8b-instant",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatGroq",
+      "typeVersion": 1,
+      "position": [
+        80,
+        208
+      ],
+      "id": "1b6461af-b7df-4bff-83d7-87301b41bebf",
+      "name": "Groq Chat Model",
+      "credentials": {
+        "groqApi": {
+          "id": "d9pDNFaYpBjxTJlP",
+          "name": "Groq account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "1UpkMJhg6rDE0npqRVGxL6HzV8a66aYwK63VYYPEIhPs",
+          "mode": "list",
+          "cachedResultName": "Indian_employyee_data.csv",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1UpkMJhg6rDE0npqRVGxL6HzV8a66aYwK63VYYPEIhPs/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1UpkMJhg6rDE0npqRVGxL6HzV8a66aYwK63VYYPEIhPs/edit#gid=0"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        368,
+        208
+      ],
+      "id": "0a4e1af4-77ff-4942-a3cf-fee03ee3cb4d",
+      "name": "Get row(s) in sheet in Google Sheets",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "PtKGr7p063VJJu4T",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "arkadhol13@mail.com",
+        "subject": "Data Analyst Assistant Report",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.2,
+      "position": [
+        480,
+        160
+      ],
+      "id": "4a05c99a-8126-4740-8ccf-f4e0d9a89649",
+      "name": "Send a message in Gmail",
+      "webhookId": "13b2e068-0818-4e0a-8e15-6dded941524a"
+    }
+  ],
+  "pinData": {
+    "When chat message received": [
+      {
+        "json": {
+          "action": "sendMessage",
+          "sessionId": "11e67f0fc5eb482c964a3369237244a8",
+          "chatInput": "hey"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When chat message received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet in Google Sheets": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message in Gmail": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "17f12ae2-1883-41ca-81b5-90dac8e7ef3e",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1a7a86bf2c2d23c054b45cfb4a65e3007ae1c92fb03f5ad21b1179acfbb4a815"
+  },
+  "id": "1Wjk6XUzRjrJBQid",
+  "tags": []
+}
